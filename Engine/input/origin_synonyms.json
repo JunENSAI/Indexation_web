@@ -1,0 +1,40 @@
+{
+	"usa": [
+		"united states",
+		"united states of america",
+		"america",
+		"états unis"
+	],
+	"france": [
+		"fr"
+	],
+	"spain": [
+		"spanish",
+		"espagne"
+	],
+	"germany": [
+		"deutschland",
+		"allemagne"
+	],
+	"south korea": [
+		"korea",
+		"corée du sud"
+	],
+	"switzerland": [
+		"swiss",
+		"suisse"
+	],
+	"netherlands": [
+		"dutch",
+		"pays bas"
+	],
+	"australia": [
+		"australie"
+	],
+	"china": [
+		"chine"
+	],
+	"india": [
+		"inde"
+	]
+}

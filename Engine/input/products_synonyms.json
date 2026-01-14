@@ -1,0 +1,110 @@
+{
+  "sneakers": [
+    "baskets",
+    "shoes",
+    "trainers",
+    "tennis",
+    "running",
+    "sport shoes",
+    "chaussure"
+  ],
+  "sandals":[
+    "boot",
+    "cleat",
+    "sandales",
+    "cowboy boot",
+    "loafer",
+    "running shoe",
+    "slipper"
+  ],
+  "boots": [
+    "bottes",
+    "hiking",
+    "rangers",
+    "outdoor"
+  ],
+  "chocolate": [
+    "chocolat",
+    "cocoa",
+    "candy",
+    "sweet",
+    "bar"
+  ],
+  "candy": [
+    "bonbon",
+    "sweets",
+    "lollies",
+    "treats",
+    "sugar"
+  ],
+  "energy": [
+    "drink",
+    "boisson",
+    "power",
+    "boost",
+    "caffeine",
+    "taurine"
+  ],
+  "potion": [
+    "elixir",
+    "liquid",
+    "flask",
+    "mana"
+  ],
+  "hat": [
+    "chapeau",
+    "cap",
+    "beanie",
+    "bonnet",
+    "headwear"
+  ],
+  "leather": [
+    "cuir",
+    "skin",
+    "suede"
+  ],
+  "pack": [
+    "paquet",
+    "bundle",
+    "set",
+    "lot",
+    "kit",
+    "box"
+  ],
+  "large": [
+    "big",
+    "grand",
+    "huge",
+    "xl"
+  ],
+  "small": [
+    "petit",
+    "tiny",
+    "mini",
+    "s"
+  ],
+  "red": [
+    "rouge",
+    "crimson",
+    "scarlet"
+  ],
+  "blue": [
+    "bleu",
+    "navy",
+    "azure",
+    "teal"
+  ],
+  "classic": [
+    "vintage",
+    "retro",
+    "old school",
+    "standard"
+  ],
+  "kids": [
+    "enfant",
+    "children",
+    "junior",
+    "boy",
+    "girl"
+  ]
+}
