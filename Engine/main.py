@@ -9,6 +9,7 @@ def main():
     origin_index = utils.load_json(config.FILES['origin_index'])
     reviews_index = utils.load_json(config.FILES['reviews_index'])
     products_db = utils.load_products_jsonl(config.FILES['products'])
+
     url_to_origin = {}
     for country, data in origin_index.items():
         if isinstance(data, list):
@@ -21,33 +22,25 @@ def main():
         for u in urls:
             url_to_origin[u] = country.capitalize()
 
-    print("Chargement et fusion des dictionnaires de synonymes...")
     synonyms_files = [
         config.FILES['origin_synonyms'], 
         config.FILES['product_synonyms']
     ]
     
-    if products_db:
-        doc_lengths, avg_dl, total_docs = ranking.compute_stats_from_index(products_db)
-    else:
-        from src.ranking import compute_stats_from_index
-        doc_lengths, avg_dl, total_docs = compute_stats_from_index(title_index)
+    doc_lengths, avg_dl, total_docs = ranking.compute_stats(products_db)
     
     synonyms_map = preprocessing.load_and_merge_synonyms(synonyms_files)
 
+    print("Moteur prêt. Tapez 'exit' pour quitter.")
+
     while True:
-        print("-" * 50)
-        query_raw = input("\n Entrez votre recherche (ex: 'blue usa') : ").strip()
-        
+        print("-" * 100)
+        query_raw = input("\nRecherche : ").strip()
         if query_raw.lower() in ['exit', 'quit']:
-            print("À une prochaine !")
             break
-        
-        if not query_raw:
-            continue
 
         original_tokens = preprocessing.tokenize(query_raw)
-        expanded_tokens_for_ranking = preprocessing.expand_query(original_tokens, synonyms_map)
+        expanded_tokens = preprocessing.expand_query(original_tokens, synonyms_map)
 
         candidate_docs = set()
         is_first_concept = True
@@ -87,34 +80,54 @@ def main():
             print("Aucun résultat trouvé.")
             continue
 
-        print(f"   Concepts traités : {original_tokens}")
-        print(f"   Documents candidats : {len(candidate_docs)}")
-
-        results = []
+        for token in expanded_tokens:
+            if token in title_index:
+                if isinstance(title_index[token], dict):
+                    candidate_docs.update(title_index[token].keys())
+                else:
+                    candidate_docs.update(title_index[token])
+                    
+        scored_results = []
+        
         for url in candidate_docs:
-            s_bm25 = ranking.bm25_score(expanded_tokens_for_ranking, url, title_index, doc_lengths, avg_dl, total_docs)
+            doc_data = products_db.get(url, {})
+            title = doc_data.get("title", "")
+            description = doc_data.get("description", "")
+
+            s_bm25 = ranking.bm25_score(expanded_tokens, url, title_index, doc_lengths, avg_dl, total_docs)
             s_reviews = reviews_index.get(url, {}).get('mean_mark', 0)
+            s_title = ranking.title_match_score(original_tokens, title)
+            s_pos = ranking.position_score(original_tokens, url, title_index)
             
-            final_score = ranking.linear_score(s_bm25, s_reviews, config.WEIGHT_BM25, config.WEIGHT_REVIEWS)
+            components = {
+                "bm25": round(s_bm25,3),
+                "reviews": round(s_reviews,3),
+                "title": s_title,
+                "position": round(s_pos,3)
+            }
+
+            final_score = ranking.linear_score(components, config.WEIGHTS)
             
-            product_info = products_db.get(url, {})
-            
-            origin_display = url_to_origin.get(url, "N/A")
-            
-            results.append({
-                "title": product_info.get("title", "Titre Inconnu"),
+            scored_results.append({
+                "title": title,
                 "url": url,
-                "origin": origin_display,
-                "score": round(final_score, 4)
+                "description": description,
+                "score": round(final_score,3),
+                "details": components
             })
-        
-        results.sort(key=lambda x: x['score'], reverse=True)
-        
-        print(f"\n {len(results)} Résultats trouvés :\n")
-        for i, res in enumerate(results[:5]):
-            print(f"{i+1}. {res['title']} (Score: {res['score']})")
-            print(f"   Origine: {res.get('origin', '?')} | URL: {res['url']}")
-            print("")
+
+        scored_results.sort(key=lambda x: x['score'], reverse=True)
+        top_results = scored_results[:10]
+
+        output_response = {
+            "metadata": {
+                "query": query_raw,
+                "nombre_total_doc": total_docs,
+                "doc_filtre": len(candidate_docs)
+            },
+            "results": top_results
+        }
+        print(json.dumps(output_response, indent=2, ensure_ascii=False))
 
 if __name__ == "__main__":
     main()

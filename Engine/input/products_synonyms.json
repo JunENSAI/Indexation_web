@@ -1,6 +1,7 @@
 {
   "sneakers": [
     "baskets",
+    "basket",
     "shoes",
     "trainers",
     "tennis",
@@ -9,8 +10,6 @@
     "chaussure"
   ],
   "sandals":[
-    "boot",
-    "cleat",
     "sandales",
     "cowboy boot",
     "loafer",

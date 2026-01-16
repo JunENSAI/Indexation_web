@@ -1,5 +1,9 @@
-WEIGHT_BM25 = 0.7
-WEIGHT_REVIEWS = 0.3
+WEIGHTS = {
+    "bm25": 0.6,
+    "title": 0.4,
+    "reviews": 0.3,
+    "position": 0.1,  
+}
 
 K1 = 1.2
 B = 0.75
